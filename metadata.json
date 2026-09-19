@@ -1,0 +1,6 @@
+{
+  "name": "ExamPro - BCS & Competitive Exam Quiz Platform",
+  "description": "Comprehensive paid MCQ examination platform for BCS, government jobs, university admission, and competitive exams with real-time test engine, negative marking, leaderboards, and administrative controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
