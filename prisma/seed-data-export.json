@@ -1,0 +1,880 @@
+{
+  "timestamp": "2026-09-27T18:35:28.801Z",
+  "models": {
+    "User": [
+      {
+        "id": "usr-admin-01",
+        "name": "Dr. Shahriar Kabir (BCS Admin)",
+        "email": "admin@exampro.edu.bd",
+        "phone": "+8801711000001",
+        "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQmG6W6x1c2n99eAdmin",
+        "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop",
+        "role": "ADMIN",
+        "isPremium": true,
+        "createdAt": "2025-12-01T00:00:00.000Z",
+        "updatedAt": "2026-01-15T12:00:00.000Z"
+      },
+      {
+        "id": "usr-inst-01",
+        "name": "Prof. Nusrat Jahan (English Cadre)",
+        "email": "nusrat.jahan@bcs.edu.bd",
+        "phone": "+8801711000002",
+        "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQmG6W6x1c2n99eInst",
+        "avatarUrl": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop",
+        "role": "INSTRUCTOR",
+        "isPremium": true,
+        "createdAt": "2025-12-10T00:00:00.000Z",
+        "updatedAt": "2026-01-20T12:00:00.000Z"
+      },
+      {
+        "id": "usr-student-free",
+        "name": "Rakibul Islam (Aspirant)",
+        "email": "rakib.edu.bd@gmail.com",
+        "phone": "+8801812345678",
+        "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQmG6W6x1c2n99eStudent",
+        "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&h=120&fit=crop",
+        "role": "STUDENT",
+        "isPremium": false,
+        "createdAt": "2026-01-05T10:00:00.000Z",
+        "updatedAt": "2026-02-01T15:30:00.000Z"
+      },
+      {
+        "id": "usr-student-pro",
+        "name": "Fatima Tuz Zohra (47th BCS Pro)",
+        "email": "fatima.bcs@gmail.com",
+        "phone": "+8801919876543",
+        "passwordHash": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQmG6W6x1c2n99eStudentPro",
+        "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&h=120&fit=crop",
+        "role": "STUDENT",
+        "isPremium": true,
+        "createdAt": "2026-01-01T08:00:00.000Z",
+        "updatedAt": "2026-02-14T09:00:00.000Z"
+      }
+    ],
+    "Subject": [
+      {
+        "id": "sub-bangla",
+        "name": "Bangla Language & Literature",
+        "code": "BAN-101",
+        "description": "Charyapada, Medieval poets, Modern literature, grammar rules & semantics.",
+        "icon": "BookOpen"
+      },
+      {
+        "id": "sub-english",
+        "name": "English Language & Literature",
+        "code": "ENG-102",
+        "description": "Grammar, vocabulary, prepositions, idioms, Renaissance to Modern literature.",
+        "icon": "Languages"
+      },
+      {
+        "id": "sub-bangladesh",
+        "name": "Bangladesh Affairs",
+        "code": "BDA-103",
+        "description": "Liberation War, Constitution, Geography, Economy, Mega Projects & Census.",
+        "icon": "Globe2"
+      },
+      {
+        "id": "sub-international",
+        "name": "International Affairs",
+        "code": "INT-104",
+        "description": "Global politics, UN & multilateral treaties, climate summits, geopolitics.",
+        "icon": "Compass"
+      },
+      {
+        "id": "sub-math",
+        "name": "Mathematical Reasoning & Mental Ability",
+        "code": "MTH-105",
+        "description": "Algebra, geometry, percentage, series, coding-decoding, analytical puzzles.",
+        "icon": "Calculator"
+      },
+      {
+        "id": "sub-science-ict",
+        "name": "General Science & ICT",
+        "code": "SCI-106",
+        "description": "Everyday physics, human physiology, networking, cyber security & AI.",
+        "icon": "Cpu"
+      }
+    ],
+    "Category": [
+      {
+        "id": "cat-bcs-prelims",
+        "name": "47th BCS Preliminary",
+        "slug": "bcs-preliminary",
+        "description": "Comprehensive 200-mark preliminary model tests curated by BCS toppers.",
+        "subjectId": "sub-bangla"
+      },
+      {
+        "id": "cat-bank-officer",
+        "name": "Combined 10 Bank Officer & Senior Officer",
+        "slug": "bank-recruitment",
+        "description": "Aptitude, quantitative analysis, commercial banking and English focus.",
+        "subjectId": "sub-math"
+      },
+      {
+        "id": "cat-varsity-admission",
+        "name": "Dhaka University Admission (KA & KHA Unit)",
+        "slug": "varsity-admission",
+        "description": "High-yield university admission test series with past 10 years solved sets.",
+        "subjectId": "sub-english"
+      },
+      {
+        "id": "cat-primary-teacher",
+        "name": "Primary Assistant Teacher Recruitment",
+        "slug": "primary-teacher",
+        "description": "Targeted model tests adhering to DPE syllabus and question matrix.",
+        "subjectId": "sub-bangladesh"
+      },
+      {
+        "id": "cat-bb-ad",
+        "name": "Bangladesh Bank Assistant Director (General)",
+        "slug": "bb-ad-recruitment",
+        "description": "Specialized analytical and high-difficulty mathematical model tests.",
+        "subjectId": "sub-math"
+      },
+      {
+        "id": "cat-govt-10-20",
+        "name": "10th to 20th Grade Ministry & Directorate Jobs",
+        "slug": "govt-grade-jobs",
+        "description": "General knowledge, computer basics and standard Bengali exams.",
+        "subjectId": "sub-science-ict"
+      }
+    ],
+    "Chapter": [
+      {
+        "id": "chap-charya",
+        "name": "চর্যাপদ ও মধ্যযুগের সাহিত্য (Charyapada & Medieval Poetry)",
+        "order": 1,
+        "categoryId": "cat-bcs-prelims"
+      },
+      {
+        "id": "chap-syntax",
+        "name": "Subject-Verb Agreement, Inversion & Conditionals",
+        "order": 2,
+        "categoryId": "cat-bcs-prelims"
+      },
+      {
+        "id": "chap-liberation",
+        "name": "১৯৭১ সালের মুক্তিযুদ্ধ ও সংবিধানের গুরুত্বপূর্ণ অনুচ্ছেদ",
+        "order": 3,
+        "categoryId": "cat-bcs-prelims"
+      },
+      {
+        "id": "chap-un-geopolitics",
+        "name": "জাতিসংঘ, আন্তর্জাতিক চুক্তি ও ভূ-রাজনীতি (UN & Geopolitics)",
+        "order": 4,
+        "categoryId": "cat-bcs-prelims"
+      },
+      {
+        "id": "chap-math-series",
+        "name": "সমান্তর ও গুণোত্তর ধারা এবং লগারিদম (Series & Logs)",
+        "order": 5,
+        "categoryId": "cat-bank-officer"
+      },
+      {
+        "id": "chap-ict-network",
+        "name": "Networking Topologies, OSI Model & Cyber Security",
+        "order": 6,
+        "categoryId": "cat-bcs-prelims"
+      },
+      {
+        "id": "chap-geometry",
+        "name": "ত্রিভুজ, বৃত্ত ও পিথাগোরাসের উপপাদ্য (Geometry & Circles)",
+        "order": 7,
+        "categoryId": "cat-bb-ad"
+      },
+      {
+        "id": "chap-vocab",
+        "name": "Synonyms, Antonyms, Analogies & Idiomatic Expressions",
+        "order": 8,
+        "categoryId": "cat-varsity-admission"
+      },
+      {
+        "id": "chap-physics",
+        "name": "দৈনন্দিন বিজ্ঞান: আলো, শব্দ, বিদ্যুৎ ও সৌরজগত",
+        "order": 9,
+        "categoryId": "cat-primary-teacher"
+      },
+      {
+        "id": "chap-bangladesh-geo",
+        "name": "বাংলাদেশের ভৌগোলিক অবস্থান, নদ-নদী ও ছিটমহল",
+        "order": 10,
+        "categoryId": "cat-bcs-prelims"
+      }
+    ],
+    "Quiz": [
+      {
+        "id": "quiz-bcs-model-1",
+        "title": "47th BCS Prelims Master Model Test - 01",
+        "slug": "47th-bcs-prelims-model-01",
+        "description": "High-yield rapid diagnostic exam covering Bangla, English, Bangladesh & ICT with standard 0.25 negative marking.",
+        "durationMinutes": 15,
+        "totalMarks": 10,
+        "passMarks": 6,
+        "negativeMarkRate": 0.25,
+        "isPaid": false,
+        "price": 0,
+        "difficulty": "MEDIUM",
+        "isPublished": true,
+        "subjectId": "sub-bangladesh",
+        "categoryId": "cat-bcs-prelims",
+        "chapterId": "chap-liberation"
+      },
+      {
+        "id": "quiz-science-ict-pro",
+        "title": "General Science & ICT Special Drill",
+        "slug": "general-science-ict-special-drill",
+        "description": "Crucial ICT and scientific knowledge questions aligned with the latest 46th & 47th BCS syllabus with detailed explanations.",
+        "durationMinutes": 12,
+        "totalMarks": 8,
+        "passMarks": 5,
+        "negativeMarkRate": 0.5,
+        "isPaid": true,
+        "price": 49,
+        "difficulty": "HARD",
+        "isPublished": true,
+        "subjectId": "sub-science-ict",
+        "categoryId": "cat-bcs-prelims",
+        "chapterId": "chap-ict-network"
+      },
+      {
+        "id": "quiz-english-speed",
+        "title": "English Literature & Grammar Speed Test",
+        "slug": "english-literature-grammar-speed-test",
+        "description": "Sharpen your vocabulary, parts of speech identification, and Elizabethan to Victorian literature recall.",
+        "durationMinutes": 10,
+        "totalMarks": 6,
+        "passMarks": 4,
+        "negativeMarkRate": 0.25,
+        "isPaid": false,
+        "price": 0,
+        "difficulty": "EASY",
+        "isPublished": true,
+        "subjectId": "sub-english",
+        "categoryId": "cat-varsity-admission",
+        "chapterId": "chap-syntax"
+      },
+      {
+        "id": "quiz-math-shortcuts",
+        "title": "Bank & BCS Math Shortcuts Rapid Test",
+        "slug": "bank-bcs-math-shortcuts-rapid-test",
+        "description": "High-frequency quantitative puzzles, percentage shortcuts, and mental ability questions with step-by-step logic.",
+        "durationMinutes": 15,
+        "totalMarks": 8,
+        "passMarks": 5,
+        "negativeMarkRate": 0.25,
+        "isPaid": true,
+        "price": 69,
+        "difficulty": "HARD",
+        "isPublished": true,
+        "subjectId": "sub-math",
+        "categoryId": "cat-bank-officer",
+        "chapterId": "chap-math-series"
+      },
+      {
+        "id": "quiz-bangladesh-affairs-master",
+        "title": "Bangladesh Affairs Comprehensive Marathon",
+        "slug": "bangladesh-affairs-comprehensive-marathon",
+        "description": "Complete coverage of 1971 Liberation War, Sector Commanders, 1972 Constitution amendments, and economic indices.",
+        "durationMinutes": 20,
+        "totalMarks": 12,
+        "passMarks": 8,
+        "negativeMarkRate": 0.25,
+        "isPaid": true,
+        "price": 99,
+        "difficulty": "MEDIUM",
+        "isPublished": true,
+        "subjectId": "sub-bangladesh",
+        "categoryId": "cat-bcs-prelims",
+        "chapterId": "chap-liberation"
+      }
+    ],
+    "Question": [
+      {
+        "id": "q-bcs-01",
+        "quizId": "quiz-bcs-model-1",
+        "chapterId": "chap-liberation",
+        "text": "১৯৭১ সালের মুক্তিযুদ্ধে ‘অপারেশন সার্চলাইট’ এর নীলনকশা প্রস্তুতকারী কে ছিলেন?",
+        "explanation": "১৯৭১ সালের ১৮ মার্চ জেনারেল রাও ফরমান আলী ও জেনারেল খাদিম হোসেন রাজা যৌথভাবে অপারেশন সার্চলাইটের নীলনকশা প্রণয়ন করেন।",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "MEDIUM",
+        "options": [
+          {
+            "id": "opt-bcs-01-a",
+            "optionLetter": "A",
+            "text": "জেনারেল টিক্কা খান",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-01-b",
+            "optionLetter": "B",
+            "text": "মেজর জেনারেল রাও ফরমান আলী ও খাদিম হোসেন রাজা",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-bcs-01-c",
+            "optionLetter": "C",
+            "text": "জেনারেল আমির আবদুল্লাহ খান নিয়াজী",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-01-d",
+            "optionLetter": "D",
+            "text": "জেনারেল ইয়াহিয়া খান",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-bcs-02",
+        "quizId": "quiz-bcs-model-1",
+        "chapterId": "chap-liberation",
+        "text": "গণপ্রজাতন্ত্রী বাংলাদেশের সংবিধানের কোন অনুচ্ছেদে ‘নির্বাহী বিভাগ থেকে বিচার বিভাগ পৃথকীকরণ’ এর বিধান রয়েছে?",
+        "explanation": "সংবিধানের ২২ নম্বর অনুচ্ছেদে রাষ্ট্র কর্তৃক নির্বাহী অঙ্গসমূহ থেকে বিচার বিভাগের পৃথকীকরণ নিশ্চিত করার নির্দেশনা দেওয়া হয়েছে।",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "MEDIUM",
+        "options": [
+          {
+            "id": "opt-bcs-02-a",
+            "optionLetter": "A",
+            "text": "অনুচ্ছেদ ১৭",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-02-b",
+            "optionLetter": "B",
+            "text": "অনুচ্ছেদ ২০",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-02-c",
+            "optionLetter": "C",
+            "text": "অনুচ্ছেদ ২২",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-bcs-02-d",
+            "optionLetter": "D",
+            "text": "অনুচ্ছেদ ২৭",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-bcs-03",
+        "quizId": "quiz-bcs-model-1",
+        "chapterId": "chap-syntax",
+        "text": "Identify the correct sentence using the subjunctive mood:",
+        "explanation": "Verbs like recommend, suggest, insist demand the base form of the verb without \"should\" or third-person \"-s\" (subjunctive form: \"submit\", not \"submits\").",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "HARD",
+        "options": [
+          {
+            "id": "opt-bcs-03-a",
+            "optionLetter": "A",
+            "text": "The committee recommended that every candidate submits their papers on time.",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-03-b",
+            "optionLetter": "B",
+            "text": "The committee recommended that every candidate submit their papers on time.",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-bcs-03-c",
+            "optionLetter": "C",
+            "text": "The committee recommended that every candidate will submit papers.",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-03-d",
+            "optionLetter": "D",
+            "text": "The committee recommended candidates for submitting papers.",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-bcs-04",
+        "quizId": "quiz-bcs-model-1",
+        "chapterId": "chap-charya",
+        "text": "বাংলা সাহিত্যের আদি নিদর্শন ‘চর্যাপদ’ নেপালের রাজদরবার থেকে হরপ্রসাদ শাস্ত্রী কত সালে আবিষ্কার করেন?",
+        "explanation": "মহামহোপাধ্যায় হরপ্রসাদ শাস্ত্রী ১৯০৭ সালে নেপালের রয়েল লাইব্রেরি (রয়েল কোর্ট) থেকে চর্যাচর্যবিনিশ্চয় পুঁথিটি আবিষ্কার করেন এবং ১৯১৬ সালে বঙ্গীয় সাহিত্য পরিষদ থেকে প্রকাশ করেন।",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "EASY",
+        "options": [
+          {
+            "id": "opt-bcs-04-a",
+            "optionLetter": "A",
+            "text": "১৯০৫ সালে",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-04-b",
+            "optionLetter": "B",
+            "text": "১৯০৭ সালে",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-bcs-04-c",
+            "optionLetter": "C",
+            "text": "১৯১১ সালে",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-04-d",
+            "optionLetter": "D",
+            "text": "১৯১৬ সালে",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-bcs-05",
+        "quizId": "quiz-bcs-model-1",
+        "chapterId": "chap-ict-network",
+        "text": "কম্পিউটার নেটওয়ার্কিং-এ IPv4 অ্যাড্রেস কত বিটের এবং IPv6 অ্যাড্রেস কত বিটের?",
+        "explanation": "IPv4 অ্যাড্রেস ৩২ বিট (৪ বাইট) দীর্ঘ এবং ডটেড ডেসিমাল আকারে লেখা হয়, অন্যদিকে IPv6 অ্যাড্রেস ১২৮ বিট দীর্ঘ এবং হেক্সাডেসিমাল নোটেশনে লেখা হয়।",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "EASY",
+        "options": [
+          {
+            "id": "opt-bcs-05-a",
+            "optionLetter": "A",
+            "text": "IPv4: ৩২ বিট এবং IPv6: ১২৮ বিট",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-bcs-05-b",
+            "optionLetter": "B",
+            "text": "IPv4: ১৬ বিট এবং IPv6: ৬৪ বিট",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-05-c",
+            "optionLetter": "C",
+            "text": "IPv4: ৬৪ বিট এবং IPv6: ১২৮ বিট",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-bcs-05-d",
+            "optionLetter": "D",
+            "text": "IPv4: ১২৮ বিট এবং IPv6: ২৫৬ বিট",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-sci-01",
+        "quizId": "quiz-science-ict-pro",
+        "chapterId": "chap-ict-network",
+        "text": "What OSI layer is responsible for end-to-end flow control, segmentation, and error checking (TCP/UDP)?",
+        "explanation": "The Transport Layer (Layer 4) handles transparent transfer of data between end users, providing reliable data transfer services including TCP and UDP.",
+        "marks": 1,
+        "negativeMarks": 0.5,
+        "difficulty": "MEDIUM",
+        "options": [
+          {
+            "id": "opt-sci-01-a",
+            "optionLetter": "A",
+            "text": "Network Layer (Layer 3)",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-sci-01-b",
+            "optionLetter": "B",
+            "text": "Transport Layer (Layer 4)",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-sci-01-c",
+            "optionLetter": "C",
+            "text": "Data Link Layer (Layer 2)",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-sci-01-d",
+            "optionLetter": "D",
+            "text": "Session Layer (Layer 5)",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-sci-02",
+        "quizId": "quiz-science-ict-pro",
+        "chapterId": "chap-physics",
+        "text": "অপটিক্যাল ফাইবার কেবলে ডেটা স্থানান্তরে আলোর কোন ভৌত ঘটনাটি কাজ করে?",
+        "explanation": "অপটিক্যাল ফাইবারে আলোর পূর্ণ অভ্যন্তরীণ প্রতিফলন (Total Internal Reflection) নীতির মাধ্যমে আলোক সংকেত অতি দ্রুত ভ্রমণ করে। সংকট কোণ অপেক্ষা বড় কোণে আলো আপতিত হয়।",
+        "marks": 1,
+        "negativeMarks": 0.5,
+        "difficulty": "EASY",
+        "options": [
+          {
+            "id": "opt-sci-02-a",
+            "optionLetter": "A",
+            "text": "আলোর প্রতিসরণ (Refraction)",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-sci-02-b",
+            "optionLetter": "B",
+            "text": "আলোর বিচ্ছুরণ (Dispersion)",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-sci-02-c",
+            "optionLetter": "C",
+            "text": "পূর্ণ অভ্যন্তরীণ প্রতিফলন (Total Internal Reflection)",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-sci-02-d",
+            "optionLetter": "D",
+            "text": "আলোর ব্যতিচার (Interference)",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-sci-03",
+        "quizId": "quiz-science-ict-pro",
+        "chapterId": "chap-ict-network",
+        "text": "‘Blue Whale’ এবং ‘WannaCry’ কোন ধরণের সাইবার ম্যালওয়্যারের উদাহরণ?",
+        "explanation": "WannaCry হলো একটি কুখ্যাত Ransomware যা ব্যবহারকারীর কম্পিউটার ডেটা এনক্রিপ্ট করে মুক্তিপণ (Ransom) দাবি করত।",
+        "marks": 1,
+        "negativeMarks": 0.5,
+        "difficulty": "MEDIUM",
+        "options": [
+          {
+            "id": "opt-sci-03-a",
+            "optionLetter": "A",
+            "text": "Spyware",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-sci-03-b",
+            "optionLetter": "B",
+            "text": "Ransomware",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-sci-03-c",
+            "optionLetter": "C",
+            "text": "Adware",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-sci-03-d",
+            "optionLetter": "D",
+            "text": "Keylogger",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-eng-01",
+        "quizId": "quiz-english-speed",
+        "chapterId": "chap-syntax",
+        "text": "Select the correct meaning of the idiom: \"A snake in the grass\"",
+        "explanation": "A snake in the grass refers to a secret enemy or someone who deceitfully pretends to be a friend while harboring malicious intent.",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "EASY",
+        "options": [
+          {
+            "id": "opt-eng-01-a",
+            "optionLetter": "A",
+            "text": "A dangerous poisonous reptile in a swamp",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-eng-01-b",
+            "optionLetter": "B",
+            "text": "A treacherous person who pretends to be a friend",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-eng-01-c",
+            "optionLetter": "C",
+            "text": "An unexpected windfall of good luck",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-eng-01-d",
+            "optionLetter": "D",
+            "text": "A very cowardly soldier in battle",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-eng-02",
+        "quizId": "quiz-english-speed",
+        "chapterId": "chap-syntax",
+        "text": "Who wrote the celebrated philosophical tragedy \"Doctor Faustus\"?",
+        "explanation": "Christopher Marlowe wrote \"The Tragical History of the Life and Death of Doctor Faustus\" during the Elizabethan era.",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "MEDIUM",
+        "options": [
+          {
+            "id": "opt-eng-02-a",
+            "optionLetter": "A",
+            "text": "William Shakespeare",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-eng-02-b",
+            "optionLetter": "B",
+            "text": "Christopher Marlowe",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-eng-02-c",
+            "optionLetter": "C",
+            "text": "Ben Jonson",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-eng-02-d",
+            "optionLetter": "D",
+            "text": "John Webster",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-mth-01",
+        "quizId": "quiz-math-shortcuts",
+        "chapterId": "chap-math-series",
+        "text": "একটি ঘড়িতে ৪টা বেজে ৩০ মিনিট বাজলে ঘণ্টার কাঁটা ও মিনিটের কাঁটার মধ্যবর্তী কোণ কত ডিগ্রি?",
+        "explanation": "সূত্র: |(11M - 60H) / 2| = |(11×30 - 60×4) / 2| = |(330 - 240) / 2| = 90 / 2 = 45°।",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "HARD",
+        "options": [
+          {
+            "id": "opt-mth-01-a",
+            "optionLetter": "A",
+            "text": "৩০°",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-mth-01-b",
+            "optionLetter": "B",
+            "text": "৪৫°",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-mth-01-c",
+            "optionLetter": "C",
+            "text": "৫০°",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-mth-01-d",
+            "optionLetter": "D",
+            "text": "৬০°",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "q-mth-02",
+        "quizId": "quiz-math-shortcuts",
+        "chapterId": "chap-math-series",
+        "text": "log₂ 64 এর মান কত?",
+        "explanation": "64 = 2^6। অতএব log₂ (2^6) = 6 × log₂ 2 = 6 × 1 = 6।",
+        "marks": 1,
+        "negativeMarks": 0.25,
+        "difficulty": "EASY",
+        "options": [
+          {
+            "id": "opt-mth-02-a",
+            "optionLetter": "A",
+            "text": "৪",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-mth-02-b",
+            "optionLetter": "B",
+            "text": "৫",
+            "isCorrect": false
+          },
+          {
+            "id": "opt-mth-02-c",
+            "optionLetter": "C",
+            "text": "৬",
+            "isCorrect": true
+          },
+          {
+            "id": "opt-mth-02-d",
+            "optionLetter": "D",
+            "text": "৮",
+            "isCorrect": false
+          }
+        ]
+      }
+    ],
+    "Subscription": [
+      {
+        "id": "sub-rec-01",
+        "userId": "usr-student-pro",
+        "planType": "ANNUAL_BCS_MASTER",
+        "price": 999,
+        "status": "ACTIVE",
+        "startDate": "2026-01-01T00:00:00.000Z",
+        "endDate": "2027-01-01T00:00:00.000Z",
+        "autoRenew": true
+      },
+      {
+        "id": "sub-rec-02",
+        "userId": "usr-inst-01",
+        "planType": "ANNUAL_BCS_MASTER",
+        "price": 999,
+        "status": "ACTIVE",
+        "startDate": "2025-12-10T00:00:00.000Z",
+        "endDate": "2026-12-10T00:00:00.000Z",
+        "autoRenew": false
+      }
+    ],
+    "Payment": [
+      {
+        "id": "pay-001",
+        "userId": "usr-student-pro",
+        "subscriptionId": "sub-rec-01",
+        "quizId": null,
+        "amount": 999,
+        "currency": "BDT",
+        "provider": "BKASH",
+        "transactionId": "TRX-BK-98834710",
+        "status": "SUCCESS",
+        "createdAt": "2026-01-01T08:15:00.000Z"
+      },
+      {
+        "id": "pay-002",
+        "userId": "usr-student-free",
+        "subscriptionId": null,
+        "quizId": "quiz-science-ict-pro",
+        "amount": 49,
+        "currency": "BDT",
+        "provider": "NAGAD",
+        "transactionId": "TRX-NG-22349182",
+        "status": "SUCCESS",
+        "createdAt": "2026-02-05T14:20:00.000Z"
+      },
+      {
+        "id": "pay-003",
+        "userId": "usr-student-pro",
+        "subscriptionId": null,
+        "quizId": "quiz-bangladesh-affairs-master",
+        "amount": 99,
+        "currency": "BDT",
+        "provider": "UPAY",
+        "transactionId": "TRX-UP-55109283",
+        "status": "SUCCESS",
+        "createdAt": "2026-02-12T19:40:00.000Z"
+      }
+    ],
+    "QuizAttempt": [
+      {
+        "id": "att-001",
+        "userId": "usr-student-pro",
+        "quizId": "quiz-bcs-model-1",
+        "score": 5,
+        "totalMarks": 5,
+        "correctCount": 5,
+        "wrongCount": 0,
+        "skippedCount": 0,
+        "negativeDeducted": 0,
+        "accuracyPercentage": 100,
+        "timeSpentSeconds": 240,
+        "passed": true,
+        "status": "COMPLETED",
+        "startedAt": "2026-02-10T10:00:00.000Z",
+        "completedAt": "2026-02-10T10:04:00.000Z"
+      },
+      {
+        "id": "att-002",
+        "userId": "usr-student-free",
+        "quizId": "quiz-bcs-model-1",
+        "score": 3.75,
+        "totalMarks": 5,
+        "correctCount": 4,
+        "wrongCount": 1,
+        "skippedCount": 0,
+        "negativeDeducted": 0.25,
+        "accuracyPercentage": 80,
+        "timeSpentSeconds": 310,
+        "passed": true,
+        "status": "COMPLETED",
+        "startedAt": "2026-02-12T14:30:00.000Z",
+        "completedAt": "2026-02-12T14:35:10.000Z"
+      }
+    ],
+    "Leaderboard": [
+      {
+        "id": "lb-01",
+        "quizId": "quiz-bcs-model-1",
+        "userId": "usr-student-pro",
+        "score": 5,
+        "accuracy": 100,
+        "timeSpentSeconds": 240,
+        "rank": 1,
+        "recordedAt": "2026-02-10T10:04:00.000Z"
+      },
+      {
+        "id": "lb-02",
+        "quizId": "quiz-bcs-model-1",
+        "userId": "usr-student-free",
+        "score": 3.75,
+        "accuracy": 80,
+        "timeSpentSeconds": 310,
+        "rank": 2,
+        "recordedAt": "2026-02-12T14:35:10.000Z"
+      }
+    ],
+    "Bookmark": [
+      {
+        "id": "bm-01",
+        "userId": "usr-student-free",
+        "quizId": "quiz-bcs-model-1",
+        "questionId": null,
+        "createdAt": "2026-02-12T14:40:00.000Z"
+      },
+      {
+        "id": "bm-02",
+        "userId": "usr-student-free",
+        "quizId": null,
+        "questionId": "q-bcs-02",
+        "createdAt": "2026-02-12T14:42:00.000Z"
+      }
+    ],
+    "Notification": [
+      {
+        "id": "notif-01",
+        "userId": "usr-student-free",
+        "title": "47th BCS Prelims Master Model Test Published!",
+        "message": "New high-yield 20-minute diagnostic test has been added to Bangladesh Affairs.",
+        "type": "QUIZ_ANNOUNCEMENT",
+        "isRead": false,
+        "createdAt": "2026-02-14T09:00:00.000Z"
+      },
+      {
+        "id": "notif-02",
+        "userId": "usr-student-pro",
+        "title": "Subscription Activated - Annual BCS Master",
+        "message": "Thank you for subscribing! You now have unlimited access to all paid model tests and question explanations.",
+        "type": "PAYMENT_SUCCESS",
+        "isRead": true,
+        "createdAt": "2026-01-01T08:15:30.000Z"
+      }
+    ]
+  }
+}

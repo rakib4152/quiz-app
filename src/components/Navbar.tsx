@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Zap,
   ChevronDown,
+  Database,
 } from 'lucide-react';
 import { User } from '../types';
 
@@ -187,6 +188,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Admin Hub
                 </button>
               )}
+
+              {/* Prisma Studio Live Database Explorer */}
+              <button
+                id="nav-prisma-studio-btn"
+                onClick={() => onNavigate('prisma_studio')}
+                className={`px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5 transition-colors border ${
+                  currentView === 'prisma_studio'
+                    ? 'bg-cyan-900 text-cyan-200 border-cyan-400 shadow-sm shadow-cyan-900/40'
+                    : 'bg-[#0E1B2E] text-cyan-300 border-cyan-800 hover:bg-cyan-950 hover:border-cyan-600'
+                }`}
+                title="Inspect database tables and run Prisma Seed"
+              >
+                <Database className="w-4 h-4 text-cyan-400" />
+                <span>Prisma Studio</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              </button>
             </nav>
           </div>
 
@@ -338,7 +355,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       </button>
                     ))}
                   </div>
-                  <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
                     <button
                       onClick={() => {
                         setShowRoleMenu(false);
@@ -348,6 +365,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <ShieldAlert className="w-3.5 h-3.5" />
                       Open Admin Dashboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowRoleMenu(false);
+                        onNavigate('prisma_studio');
+                      }}
+                      className="w-full text-left px-3 py-1.5 text-xs text-cyan-600 dark:text-cyan-400 hover:bg-cyan-50 dark:hover:bg-cyan-950/40 rounded-md font-semibold flex items-center gap-1.5"
+                    >
+                      <Database className="w-3.5 h-3.5 text-cyan-500" />
+                      Open Prisma Studio & Database
                     </button>
                   </div>
                 </div>

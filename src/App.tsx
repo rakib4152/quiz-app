@@ -8,6 +8,7 @@ import { LeaderboardView } from './components/LeaderboardView';
 import { StudentDashboard } from './components/StudentDashboard';
 import { PricingView } from './components/PricingView';
 import { AdminPanel } from './components/AdminPanel';
+import { PrismaStudioView } from './components/PrismaStudioView';
 
 import {
   User,
@@ -249,6 +250,18 @@ export default function App() {
   const handleAddCategory = (c: Category) => setCategories((prev) => [...prev, c]);
   const handleAddChapter = (ch: Chapter) => setChapters((prev) => [...prev, ch]);
 
+  // Seed Synchronization
+  const handlePrismaSeedReset = () => {
+    setQuizzes([...INITIAL_QUIZZES]);
+    setSubjects([...INITIAL_SUBJECTS]);
+    setCategories([...INITIAL_CATEGORIES]);
+    setChapters([...INITIAL_CHAPTERS]);
+    setQuestions({ ...INITIAL_QUESTIONS });
+    setLeaderboard([...INITIAL_LEADERBOARD]);
+    setPayments([...INITIAL_PAYMENTS]);
+    showToast('Prisma database successfully seeded! All 14 models synchronized.');
+  };
+
   const activeQuiz = quizzes.find((q) => q.id === activeQuizId) || quizzes[0];
   const activeQuizQuestions = (activeQuizId && questions[activeQuizId]) || questions['quiz-bcs-model-1'] || [];
 
@@ -385,7 +398,17 @@ export default function App() {
             onAddSubject={handleAddSubject}
             onAddCategory={handleAddCategory}
             onAddChapter={handleAddChapter}
+            onOpenPrismaStudio={() => setCurrentView('prisma_studio')}
           />
+        )}
+
+        {currentView === 'prisma_studio' && (
+          <div className="fixed inset-0 z-50 bg-[#0F172A]">
+            <PrismaStudioView
+              onDataReset={handlePrismaSeedReset}
+              onClose={() => setCurrentView('home')}
+            />
+          </div>
         )}
       </main>
 
@@ -405,6 +428,13 @@ export default function App() {
             </button>
             <button onClick={() => setCurrentView('pricing')} className="hover:underline">
               BCS Pro Pass
+            </button>
+            <button
+              onClick={() => setCurrentView('prisma_studio')}
+              className="hover:underline font-bold text-cyan-600 dark:text-cyan-400 flex items-center gap-1"
+            >
+              <span>Prisma Studio</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             </button>
             <button
               onClick={() => {
