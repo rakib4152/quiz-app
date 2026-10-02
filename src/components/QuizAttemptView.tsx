@@ -10,7 +10,7 @@ import {
   Send,
   X,
   RotateCcw,
-  Check,
+  Check
 } from 'lucide-react';
 import { Quiz, Question, UserAnswer, QuizAttempt } from '../types';
 import { calculateQuizScore } from '../api/mobileApi';

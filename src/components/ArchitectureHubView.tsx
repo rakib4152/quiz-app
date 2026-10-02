@@ -7,7 +7,6 @@ import {
   CreditCard,
   Layers,
   Zap,
-  RefreshCw,
   Cpu,
   Database,
   ArrowRight,
@@ -15,16 +14,13 @@ import {
   AlertTriangle,
   Play,
   Key,
-  Flame,
-  Radio,
-  Clock,
-  Terminal,
+  Flame
 } from 'lucide-react';
 
 import {
   AUTH0_PRESET_USERS,
   generateAuth0Jwt,
-  verifyAndDecodeAuth0Token,
+  verifyAndDecodeAuth0Token
 } from '../services/auth0/auth0Service';
 import { kafkaClient } from '../services/kafka/kafkaClient';
 import { elasticsearchEngine } from '../services/elasticsearch/elasticsearchClient';
@@ -43,7 +39,7 @@ import {
   LedgerEntry,
   ServiceHealth,
   EsSearchResult,
-  EsQuizDocument,
+  EsQuizDocument
 } from '../types/architecture';
 import { User, Quiz } from '../types';
 

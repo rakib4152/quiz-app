@@ -1,7 +1,7 @@
 import {
   KafkaRecord,
   KafkaTopicMetadata,
-  KafkaConsumerGroupState,
+  KafkaConsumerGroupState
 } from '../../types/architecture';
 
 type EventListener = (record: KafkaRecord) => void;

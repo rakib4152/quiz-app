@@ -8,10 +8,9 @@ import {
   Zap,
   Bookmark,
   Sparkles,
-  AlertTriangle,
   RotateCcw,
   BookOpen,
-  Cpu,
+  Cpu
 } from 'lucide-react';
 import { Quiz, Subject, Category, Chapter, User } from '../types';
 import { elasticsearchEngine } from '../services/elasticsearch/elasticsearchClient';

@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import {
   Award,
+  AlertCircle,
+  RotateCcw,
   CheckCircle2,
   XCircle,
-  Clock,
-  RotateCcw,
-  BookOpen,
   Bookmark,
-  Share2,
-  Sparkles,
-  AlertCircle,
-  HelpCircle,
+  HelpCircle
 } from 'lucide-react';
 import { Quiz, Question, QuizAttempt } from '../types';
 

@@ -3,17 +3,17 @@ import {
   BookOpen,
   Award,
   Zap,
-  Clock,
-  CheckCircle2,
-  TrendingUp,
   ArrowRight,
-  Sparkles,
-  HelpCircle,
+  CheckCircle2,
+  Clock,
   Users,
-  ShieldCheck,
-  Check,
   ChevronRight,
+  Star,
+  Sparkles,
+  Target,
+  Check,
   Flame,
+  HelpCircle
 } from 'lucide-react';
 import { Quiz, Subject, LeaderboardEntry, User } from '../types';
 

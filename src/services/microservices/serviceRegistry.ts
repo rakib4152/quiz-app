@@ -2,7 +2,7 @@ import {
   MicroserviceId,
   ServiceHealth,
   MicroserviceRequest,
-  MicroserviceResponse,
+  MicroserviceResponse
 } from '../../types/architecture';
 
 class ServiceRegistry {

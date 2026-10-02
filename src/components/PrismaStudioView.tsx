@@ -1,27 +1,23 @@
 import React, { useState } from 'react';
 import {
   Database,
-  Terminal,
-  RefreshCw,
+  Table,
   Plus,
-  Trash2,
+  RefreshCw,
+  Download,
   Search,
   Filter,
-  Download,
-  Copy,
   Check,
-  ExternalLink,
-  ChevronRight,
+  Code,
   Code2,
-  Table,
-  Eye,
-  AlertCircle,
-  CheckCircle2,
-  Sparkles,
   Info,
-  Server,
-  Layers,
+  Terminal,
+  Eye,
+  Copy,
+  Trash2,
   HelpCircle,
+  AlertCircle,
+  Server
 } from 'lucide-react';
 import {
   SEED_USERS,
@@ -35,7 +31,7 @@ import {
   SEED_ATTEMPTS,
   SEED_LEADERBOARD,
   SEED_BOOKMARKS,
-  SEED_NOTIFICATIONS,
+  SEED_NOTIFICATIONS
 } from '../../prisma/seedData';
 
 type ModelKey =

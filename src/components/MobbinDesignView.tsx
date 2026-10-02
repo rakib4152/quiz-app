@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Sparkles,
-  Smartphone,
   Layout,
-  Layers,
   Palette,
-  ExternalLink,
   Search,
   CheckCircle2,
   Copy,
-  Sliders,
   Check,
-  Code2,
+  Code2
 } from 'lucide-react';
 import { mobbinApiClient, MobbinScreen } from '../services/mobbin/mobbinApiClient';
 

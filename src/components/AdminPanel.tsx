@@ -1,26 +1,20 @@
 import React, { useState } from 'react';
 import {
-  LayoutDashboard,
-  BookOpen,
   Plus,
   Trash2,
   Edit,
   Upload,
+  BookOpen,
+  DollarSign,
   Users,
-  CreditCard,
   CheckCircle,
-  XCircle,
+  Filter,
+  Database,
   FileSpreadsheet,
+  LayoutDashboard,
   Layers,
   FolderTree,
-  DollarSign,
-  Smartphone,
-  ShieldCheck,
-  Search,
-  Check,
-  Download,
-  Flame,
-  Database,
+  Smartphone
 } from 'lucide-react';
 import {
   Quiz,
@@ -28,9 +22,8 @@ import {
   Subject,
   Category,
   Chapter,
-  User,
   PaymentRecord,
-  Difficulty,
+  Difficulty
 } from '../types';
 import { MOBILE_API_ENDPOINTS } from '../api/mobileApi';
 

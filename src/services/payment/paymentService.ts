@@ -2,7 +2,7 @@ import {
   GatewayProvider,
   PaymentState,
   PaymentTransactionRecord,
-  LedgerEntry,
+  LedgerEntry
 } from '../../types/architecture';
 import { kafkaClient } from '../kafka/kafkaClient';
 import { cdcPipeline } from '../cdc/cdcPipeline';

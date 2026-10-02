@@ -31,7 +31,7 @@ import {
   LeaderboardEntry,
   PaymentRecord,
   SubscriptionPlan,
-  PaymentProvider,
+  PaymentProvider
 } from './types';
 
 import {
@@ -41,7 +41,7 @@ import {
   INITIAL_QUIZZES,
   INITIAL_QUESTIONS,
   INITIAL_LEADERBOARD,
-  INITIAL_PAYMENTS,
+  INITIAL_PAYMENTS
 } from './data/mockData';
 
 export default function App() {

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   BookOpen,
   Award,
-  CreditCard,
   LayoutDashboard,
   ShieldAlert,
   Moon,
@@ -15,7 +14,7 @@ import {
   ChevronDown,
   Database,
   Cpu,
-  Layout,
+  Layout
 } from 'lucide-react';
 import { User } from '../types';
 

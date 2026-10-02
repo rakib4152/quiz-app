@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Award,
-  Trophy,
-  Medal,
-  Clock,
-  CheckCircle2,
-  Search,
-  Filter,
-  Users,
-  Sparkles,
-} from 'lucide-react';
+import { Trophy, Search, Filter } from 'lucide-react';
 import { LeaderboardEntry, Quiz } from '../types';
 
 interface LeaderboardViewProps {

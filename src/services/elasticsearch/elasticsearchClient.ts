@@ -3,7 +3,7 @@ import {
   EsQuestionDocument,
   EsSearchQuery,
   EsSearchResult,
-  EsHit,
+  EsHit
 } from '../../types/architecture';
 import { Quiz, Question, Subject, Category } from '../../types';
 

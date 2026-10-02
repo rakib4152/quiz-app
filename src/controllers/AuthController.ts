@@ -2,7 +2,7 @@ import { Auth0User } from '../types/architecture';
 import {
   AUTH0_PRESET_USERS,
   generateAuth0Jwt,
-  verifyAndDecodeAuth0Token,
+  verifyAndDecodeAuth0Token
 } from '../services/auth0/auth0Service';
 import { runMiddlewarePipeline } from '../middleware';
 

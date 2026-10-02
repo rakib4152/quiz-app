@@ -3,15 +3,12 @@ import {
   Award,
   Clock,
   CheckCircle2,
+  TrendingUp,
   Bookmark,
   Zap,
-  TrendingUp,
-  Flame,
-  Calendar,
-  CreditCard,
-  ChevronRight,
-  RotateCcw,
+  User as UserIcon,
   Sparkles,
+  Flame
 } from 'lucide-react';
 import { User, QuizAttempt, Quiz, Question } from '../types';
 

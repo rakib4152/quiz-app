@@ -1,7 +1,7 @@
 import {
   FlinkJobStats,
   FlinkWindowSummary,
-  FlinkCepAlert,
+  FlinkCepAlert
 } from '../../types/architecture';
 import { kafkaClient } from '../kafka/kafkaClient';
 import { QuizAttempt, Quiz } from '../../types';
