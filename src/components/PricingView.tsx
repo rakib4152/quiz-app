@@ -7,7 +7,7 @@ import {
   HelpCircle,
   CreditCard,
   X,
-  Lock
+  Lock,
 } from 'lucide-react';
 import { User, SubscriptionPlan, PaymentProvider } from '../types';
 
