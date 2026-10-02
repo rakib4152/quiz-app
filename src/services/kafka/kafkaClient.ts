@@ -20,6 +20,30 @@ class KafkaEventBus {
   private initDefaultTopics() {
     const defaultTopics: KafkaTopicMetadata[] = [
       {
+        name: 'exampro.users.events',
+        partitionsCount: 6,
+        replicationFactor: 3,
+        messageCount: 0,
+        retentionHours: 720,
+        bytesInPerSec: 940,
+      },
+      {
+        name: 'exampro.questions.events',
+        partitionsCount: 8,
+        replicationFactor: 3,
+        messageCount: 0,
+        retentionHours: 360,
+        bytesInPerSec: 1200,
+      },
+      {
+        name: 'exampro.quizzes.events',
+        partitionsCount: 8,
+        replicationFactor: 3,
+        messageCount: 0,
+        retentionHours: 360,
+        bytesInPerSec: 1680,
+      },
+      {
         name: 'exampro.quizzes.cdc',
         partitionsCount: 6,
         replicationFactor: 3,
@@ -34,6 +58,14 @@ class KafkaEventBus {
         messageCount: 0,
         retentionHours: 72,
         bytesInPerSec: 3200,
+      },
+      {
+        name: 'exampro.payments.events',
+        partitionsCount: 6,
+        replicationFactor: 3,
+        messageCount: 0,
+        retentionHours: 720,
+        bytesInPerSec: 890,
       },
       {
         name: 'exampro.payments.transactions',
@@ -67,6 +99,38 @@ class KafkaEventBus {
     });
 
     // Default consumer groups
+    this.consumerGroups.set('cg-user-service', {
+      groupId: 'cg-user-service',
+      topic: 'exampro.payments.events',
+      activeMembers: 3,
+      totalLag: 0,
+      state: 'Stable',
+    });
+
+    this.consumerGroups.set('cg-question-service', {
+      groupId: 'cg-question-service',
+      topic: 'exampro.attempts.events',
+      activeMembers: 4,
+      totalLag: 0,
+      state: 'Stable',
+    });
+
+    this.consumerGroups.set('cg-quiz-service', {
+      groupId: 'cg-quiz-service',
+      topic: 'exampro.questions.events',
+      activeMembers: 6,
+      totalLag: 0,
+      state: 'Stable',
+    });
+
+    this.consumerGroups.set('cg-payment-service', {
+      groupId: 'cg-payment-service',
+      topic: 'exampro.users.events',
+      activeMembers: 2,
+      totalLag: 0,
+      state: 'Stable',
+    });
+
     this.consumerGroups.set('cg-elasticsearch-sink', {
       groupId: 'cg-elasticsearch-sink',
       topic: 'exampro.quizzes.cdc',

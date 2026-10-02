@@ -14,8 +14,23 @@ import {
   AlertTriangle,
   Play,
   Key,
-  Flame
+  Flame,
+  Plus,
+  Users,
+  BookOpen,
+  Award
 } from 'lucide-react';
+
+interface InterconnectLog {
+  id: string;
+  timestamp: string;
+  from: string;
+  to: string;
+  topic: string;
+  eventType: string;
+  status: string;
+  detail: string;
+}
 
 import {
   AUTH0_PRESET_USERS,
@@ -28,6 +43,7 @@ import { cdcPipeline } from '../services/cdc/cdcPipeline';
 import { flinkStreamEngine } from '../services/flink/flinkStreamEngine';
 import { paymentMicroservice } from '../services/payment/paymentService';
 import { serviceRegistry } from '../services/microservices/serviceRegistry';
+import { userService, questionService, quizService } from '../microservices';
 import { AnalyticsController } from '../controllers/AnalyticsController';
 import { SearchController } from '../controllers/SearchController';
 import { PaymentController } from '../controllers/PaymentController';
@@ -83,6 +99,156 @@ export function ArchitectureHubView({
   const [simGateway, setSimGateway] = useState<'BKASH' | 'NAGAD'>('BKASH');
   const [simIdempKey, setSimIdempKey] = useState(`idemp-${Date.now().toString(36)}`);
   const [paymentNotice, setPaymentNotice] = useState<string | null>(null);
+  const [interconnectLogs, setInterconnectLogs] = useState<InterconnectLog[]>([
+    {
+      id: 'init-1',
+      timestamp: new Date().toLocaleTimeString(),
+      from: 'Payment Service',
+      to: 'User Service',
+      topic: 'exampro.payments.events',
+      eventType: 'PAYMENT_COMPLETED',
+      status: 'CONSUMED',
+      detail: 'Upgraded usr-student-pro to ANNUAL_BCS_MASTER plan',
+    },
+    {
+      id: 'init-2',
+      timestamp: new Date().toLocaleTimeString(),
+      from: 'Quiz Service',
+      to: 'Question Service',
+      topic: 'exampro.attempts.events',
+      eventType: 'ATTEMPT_SUBMITTED',
+      status: 'CONSUMED',
+      detail: 'Calibrated question difficulty index based on student answer accuracy',
+    },
+    {
+      id: 'init-3',
+      timestamp: new Date().toLocaleTimeString(),
+      from: 'Question Service',
+      to: 'Quiz Service',
+      topic: 'exampro.questions.events',
+      eventType: 'QUESTION_CREATED',
+      status: 'ACKNOWLEDGED',
+      detail: 'Synced high-yield question to BCS Preliminary exam catalog',
+    },
+  ]);
+
+  const handleSimulatePaymentToUserUpgrade = async () => {
+    const randomIdemp = `idemp-${Date.now()}`;
+    const tx = await PaymentController.checkout({
+      userId: currentUser.id,
+      userName: currentUser.name,
+      userEmail: currentUser.email,
+      amount: 1499,
+      plan: 'ANNUAL_BCS_MASTER',
+      gateway: 'BKASH',
+      idempotencyKey: randomIdemp,
+    });
+
+    if (tx.success && tx.transaction) {
+      await PaymentController.verifyPayment(tx.transaction.transactionId, true);
+      setInterconnectLogs((prev) => [
+        {
+          id: `log-${Date.now()}-1`,
+          timestamp: new Date().toLocaleTimeString(),
+          from: 'Payment Service',
+          to: 'User Service',
+          topic: 'exampro.payments.events',
+          eventType: 'PAYMENT_COMPLETED',
+          status: 'CONSUMED',
+          detail: `Payment verified for ${currentUser.name} (৳1499 via bKash). User Service consumer automatically upgraded subscription.`,
+        },
+        {
+          id: `log-${Date.now()}-2`,
+          timestamp: new Date().toLocaleTimeString(),
+          from: 'User Service',
+          to: 'Quiz Service',
+          topic: 'exampro.users.events',
+          eventType: 'USER_SUBSCRIPTION_UPGRADED',
+          status: 'CONSUMED',
+          detail: `User Service emitted upgrade event. Quiz Service updated local entitlement cache, unlocking all premium tests.`,
+        },
+        ...prev.slice(0, 10),
+      ]);
+      refreshData();
+    }
+  };
+
+  const handleSimulateAttemptToQuestionCalibration = async () => {
+    const qList = questionService.getQuestions();
+    const testQuiz = quizzes[0] || { id: 'quiz-bcs-46-prelim', totalMarks: 100, passMarks: 50 };
+
+    kafkaClient.produce(
+      'exampro.attempts.events',
+      currentUser.id,
+      {
+        attempt: {
+          id: `att-sim-${Date.now()}`,
+          userId: currentUser.id,
+          quizId: testQuiz.id,
+          score: 84.5,
+          totalMarks: 100,
+          answers: qList.slice(0, 5).map((q, idx) => ({
+            questionId: q.id,
+            selectedOptionId: q.options[0]?.id || 'opt-1',
+            isCorrect: idx % 2 === 0,
+          })),
+        },
+        quiz: testQuiz,
+        userName: currentUser.name,
+      },
+      [
+        { key: 'event.type', value: 'ATTEMPT_SUBMITTED' },
+        { key: 'source', value: 'quiz-service' },
+      ]
+    );
+
+    setInterconnectLogs((prev) => [
+      {
+        id: `log-${Date.now()}-1`,
+        timestamp: new Date().toLocaleTimeString(),
+        from: 'Quiz Service',
+        to: 'Question Service',
+        topic: 'exampro.attempts.events',
+        eventType: 'ATTEMPT_SUBMITTED',
+        status: 'CONSUMED',
+        detail: `Quiz Service evaluated attempt (score 84.5). Question Service consumed answers and updated accuracy & difficulty ratings.`,
+      },
+      ...prev.slice(0, 10),
+    ]);
+    refreshData();
+  };
+
+  const handleSimulateQuestionToQuizSync = async () => {
+    const newQ = questionService.createQuestion({
+      quizId: quizzes[0]?.id || 'quiz-bcs-46-prelim',
+      text: `[BCS High-Yield ${Date.now().toString().slice(-4)}] Which article of Bangladesh Constitution guarantees freedom of thought and conscience?`,
+      explanation: 'Article 39(1) of the Constitution of Bangladesh guarantees freedom of thought and conscience.',
+      marks: 1.0,
+      negativeMarks: 0.25,
+      difficulty: 'MEDIUM',
+      options: [
+        { id: 'opt-a', questionId: 'q-sim', optionLetter: 'A', text: 'Article 27', isCorrect: false },
+        { id: 'opt-b', questionId: 'q-sim', optionLetter: 'B', text: 'Article 39', isCorrect: true },
+        { id: 'opt-c', questionId: 'q-sim', optionLetter: 'C', text: 'Article 32', isCorrect: false },
+        { id: 'opt-d', questionId: 'q-sim', optionLetter: 'D', text: 'Article 44', isCorrect: false },
+      ],
+    });
+
+    setInterconnectLogs((prev) => [
+      {
+        id: `log-${Date.now()}-1`,
+        timestamp: new Date().toLocaleTimeString(),
+        from: 'Question Service',
+        to: 'Quiz Service',
+        topic: 'exampro.questions.events',
+        eventType: 'QUESTION_CREATED',
+        status: 'ACKNOWLEDGED',
+        detail: `Question Service created new question ${newQ.id}. Quiz Service consumer acknowledged item registration in catalog.`,
+      },
+      ...prev.slice(0, 10),
+    ]);
+    refreshData();
+  };
 
   // Sync state & live listeners
   const refreshData = () => {
@@ -1114,6 +1280,191 @@ export function ArchitectureHubView({
                   <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
                     <div className="text-rose-400 font-bold">6. RFC 7807</div>
                     <div className="text-[10px] text-slate-400 mt-1">Problem Details</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Apache Kafka Interconnection Mesh & Simulation */}
+              <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Activity className="w-5 h-5 text-cyan-400" />
+                      <h3 className="text-sm font-extrabold text-white">
+                        Apache Kafka Inter-Service Event Mesh
+                      </h3>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                        EVENT-DRIVEN ARCHITECTURE
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Asynchronous event choreography between User Service, Question Service, Quiz Service, and Payment Service
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={handleSimulatePaymentToUserUpgrade}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>1. Test Payment ➔ User Upgrade Flow</span>
+                    </button>
+                    <button
+                      onClick={handleSimulateAttemptToQuestionCalibration}
+                      className="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <Activity className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>2. Test Quiz Attempt ➔ Question Calib</span>
+                    </button>
+                    <button
+                      onClick={handleSimulateQuestionToQuizSync}
+                      className="px-3 py-1.5 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>3. Test Question ➔ Quiz Sync</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 4 Microservice Folders Structure Display */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* User Service */}
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-400 font-mono flex items-center gap-1.5">
+                        <Users className="w-4 h-4" />
+                        user-service
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">:4001</span>
+                    </div>
+                    <div className="text-[11px] text-slate-300">
+                      User identity, RBAC profile, and subscription entitlement management.
+                    </div>
+                    <div className="font-mono text-[10px] space-y-1 text-slate-400 border-t border-slate-800/80 pt-2">
+                      <div className="text-slate-300 font-semibold">📁 src/microservices/user-service/</div>
+                      <div>• userService.ts</div>
+                      <div>• userConsumer.ts (Kafka)</div>
+                      <div>• userEvents.ts</div>
+                      <div>• userController.ts</div>
+                    </div>
+                    <div className="bg-slate-950 p-2 rounded text-[10px] font-mono space-y-1">
+                      <div className="text-cyan-400">PUB: exampro.users.events</div>
+                      <div className="text-emerald-400">SUB: exampro.payments.events</div>
+                    </div>
+                  </div>
+
+                  {/* Question Service */}
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-cyan-400 font-mono flex items-center gap-1.5">
+                        <BookOpen className="w-4 h-4" />
+                        question-service
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">:4002</span>
+                    </div>
+                    <div className="text-[11px] text-slate-300">
+                      Item banking, BCS question bank, difficulty calibration & accuracy stats.
+                    </div>
+                    <div className="font-mono text-[10px] space-y-1 text-slate-400 border-t border-slate-800/80 pt-2">
+                      <div className="text-slate-300 font-semibold">📁 src/microservices/question-service/</div>
+                      <div>• questionService.ts</div>
+                      <div>• questionConsumer.ts (Kafka)</div>
+                      <div>• questionEvents.ts</div>
+                      <div>• questionController.ts</div>
+                    </div>
+                    <div className="bg-slate-950 p-2 rounded text-[10px] font-mono space-y-1">
+                      <div className="text-cyan-400">PUB: exampro.questions.events</div>
+                      <div className="text-emerald-400">SUB: exampro.attempts.events</div>
+                    </div>
+                  </div>
+
+                  {/* Quiz Service */}
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-indigo-400 font-mono flex items-center gap-1.5">
+                        <Award className="w-4 h-4" />
+                        quiz-service
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">:4003</span>
+                    </div>
+                    <div className="text-[11px] text-slate-300">
+                      Examination execution, BCS negative marking engine & score evaluation.
+                    </div>
+                    <div className="font-mono text-[10px] space-y-1 text-slate-400 border-t border-slate-800/80 pt-2">
+                      <div className="text-slate-300 font-semibold">📁 src/microservices/quiz-service/</div>
+                      <div>• quizService.ts</div>
+                      <div>• quizConsumer.ts (Kafka)</div>
+                      <div>• quizEvents.ts</div>
+                      <div>• quizController.ts</div>
+                    </div>
+                    <div className="bg-slate-950 p-2 rounded text-[10px] font-mono space-y-1">
+                      <div className="text-cyan-400">PUB: exampro.attempts.events</div>
+                      <div className="text-emerald-400">SUB: exampro.questions.events</div>
+                    </div>
+                  </div>
+
+                  {/* Payment Service */}
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-amber-400 font-mono flex items-center gap-1.5">
+                        <CreditCard className="w-4 h-4" />
+                        payment-service
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">:4004</span>
+                    </div>
+                    <div className="text-[11px] text-slate-300">
+                      bKash / Nagad payment gateways, idempotency keys, and double-entry ledger.
+                    </div>
+                    <div className="font-mono text-[10px] space-y-1 text-slate-400 border-t border-slate-800/80 pt-2">
+                      <div className="text-slate-300 font-semibold">📁 src/microservices/payment-service/</div>
+                      <div>• paymentService.ts</div>
+                      <div>• paymentConsumer.ts (Kafka)</div>
+                      <div>• paymentEvents.ts</div>
+                      <div>• paymentController.ts</div>
+                    </div>
+                    <div className="bg-slate-950 p-2 rounded text-[10px] font-mono space-y-1">
+                      <div className="text-cyan-400">PUB: exampro.payments.events</div>
+                      <div className="text-emerald-400">SUB: exampro.users.events</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Inter-Service Kafka Logs */}
+                <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-900">
+                  <div className="bg-slate-850 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold text-slate-200 flex items-center gap-2">
+                      <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                      LIVE INTER-SERVICE KAFKA EVENT STREAM
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {interconnectLogs.length} events recorded
+                    </span>
+                  </div>
+
+                  <div className="divide-y divide-slate-800 max-h-64 overflow-y-auto font-mono text-xs">
+                    {interconnectLogs.map((log) => (
+                      <div key={log.id} className="p-3 hover:bg-slate-800/40 transition space-y-1">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-400">{log.timestamp}</span>
+                            <span className="font-bold text-indigo-400">{log.from}</span>
+                            <span className="text-slate-500">──▶</span>
+                            <span className="text-cyan-300 bg-cyan-950/60 border border-cyan-800/40 px-1.5 py-0.5 rounded text-[10px]">
+                              {log.topic}
+                            </span>
+                            <span className="text-slate-500">──▶</span>
+                            <span className="font-bold text-emerald-400">{log.to}</span>
+                          </div>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                            {log.status}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-300">
+                          <span className="text-amber-400 font-semibold">[{log.eventType}]</span> {log.detail}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>

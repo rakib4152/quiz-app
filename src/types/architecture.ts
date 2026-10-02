@@ -43,9 +43,11 @@ export interface Auth0Config {
 // 2. MICROSERVICE TYPES
 // ==========================================
 export type MicroserviceId =
-  | 'auth-service'
+  | 'user-service'
+  | 'question-service'
   | 'quiz-service'
   | 'payment-service'
+  | 'auth-service'
   | 'search-service'
   | 'analytics-service';
 
