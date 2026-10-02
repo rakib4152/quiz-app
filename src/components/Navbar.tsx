@@ -14,6 +14,8 @@ import {
   Zap,
   ChevronDown,
   Database,
+  Cpu,
+  Layout,
 } from 'lucide-react';
 import { User } from '../types';
 
@@ -188,6 +190,38 @@ export const Navbar: React.FC<NavbarProps> = ({
                   Admin Hub
                 </button>
               )}
+
+              {/* Mobbin UI/UX Design System */}
+              <button
+                id="nav-mobbin-btn"
+                onClick={() => onNavigate('mobbin')}
+                className={`px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5 transition-colors border ${
+                  currentView === 'mobbin'
+                    ? 'bg-rose-900 text-rose-200 border-rose-400 shadow-sm shadow-rose-900/40'
+                    : 'bg-slate-900 text-rose-300 border-rose-900 hover:bg-rose-950 hover:border-rose-600'
+                }`}
+                title="Inspect Mobbin UI flows, design patterns, and tokens"
+              >
+                <Layout className="w-4 h-4 text-rose-400" />
+                <span>Mobbin Design</span>
+                <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+              </button>
+
+              {/* Architecture & Enterprise Console */}
+              <button
+                id="nav-architecture-btn"
+                onClick={() => onNavigate('architecture')}
+                className={`px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-1.5 transition-colors border ${
+                  currentView === 'architecture'
+                    ? 'bg-indigo-900 text-indigo-200 border-indigo-400 shadow-sm shadow-indigo-900/40'
+                    : 'bg-slate-900 text-indigo-300 border-indigo-900 hover:bg-indigo-950 hover:border-indigo-600'
+                }`}
+                title="Auth0, Kafka, CDC, Flink, Elasticsearch, Payment Microservice Console"
+              >
+                <Cpu className="w-4 h-4 text-indigo-400 animate-pulse" />
+                <span>Architecture Hub</span>
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+              </button>
 
               {/* Prisma Studio Live Database Explorer */}
               <button
@@ -365,6 +399,26 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <ShieldAlert className="w-3.5 h-3.5" />
                       Open Admin Dashboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowRoleMenu(false);
+                        onNavigate('mobbin');
+                      }}
+                      className="w-full text-left px-3 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-md font-semibold flex items-center gap-1.5"
+                    >
+                      <Layout className="w-3.5 h-3.5 text-rose-500" />
+                      Open Mobbin Design System
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowRoleMenu(false);
+                        onNavigate('architecture');
+                      }}
+                      className="w-full text-left px-3 py-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-md font-semibold flex items-center gap-1.5"
+                    >
+                      <Cpu className="w-3.5 h-3.5 text-indigo-500" />
+                      Open Architecture & Streaming Hub
                     </button>
                     <button
                       onClick={() => {

@@ -68,6 +68,30 @@ export const QuizAttemptView: React.FC<QuizAttemptViewProps> = ({
     isMarkedForReview: false,
   };
 
+  // Keyboard navigation shortcuts (A, B, C, D, Arrows) inspired by Mobbin Quizlet flow
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if inside an input or textarea
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+
+      const key = e.key.toUpperCase();
+      if (['A', 'B', 'C', 'D'].includes(key)) {
+        const letterMap: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
+        const opt = currentQuestion.options[letterMap[key]];
+        if (opt) handleSelectOption(opt.id);
+      } else if (e.key === 'ArrowRight') {
+        setCurrentIdx((p) => Math.min(questions.length - 1, p + 1));
+      } else if (e.key === 'ArrowLeft') {
+        setCurrentIdx((p) => Math.max(0, p - 1));
+      } else if (key === 'R') {
+        handleToggleReview();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentQuestion, questions.length]);
+
   const handleSelectOption = (optionId: string) => {
     setUserAnswers((prev) => ({
       ...prev,
@@ -187,15 +211,28 @@ export const QuizAttemptView: React.FC<QuizAttemptViewProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Question Prompt & 4 Options */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-6">
-            {/* Question Meta Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-black px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-6 overflow-hidden relative">
+            {/* Top Linear Progress Bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-800">
+              <div
+                className="h-full bg-emerald-500 transition-all duration-300"
+                style={{ width: `${Math.round(((currentIdx + 1) / questions.length) * 100)}%` }}
+              />
+            </div>
+
+            {/* Question Meta Header - Zero-Pill Typography */}
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 pt-1">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">
                   Question {currentIdx + 1} of {questions.length}
                 </span>
-                <span className="text-[11px] text-slate-400">
-                  (+{currentQuestion.marks} Mark / -{currentQuestion.negativeMarks} Wrong)
+                <span aria-hidden="true" className="text-slate-400">·</span>
+                <span className="text-slate-500 dark:text-slate-400 text-[11px]">
+                  +{currentQuestion.marks} Mark / -{currentQuestion.negativeMarks} Penalty
+                </span>
+                <span aria-hidden="true" className="text-slate-400">·</span>
+                <span className="text-[11px] text-slate-400 hidden sm:inline">
+                  Keyboard keys: <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono">A</kbd> <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono">B</kbd> <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono">C</kbd> <kbd className="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono">D</kbd>
                 </span>
               </div>
 

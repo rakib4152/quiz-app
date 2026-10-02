@@ -9,6 +9,16 @@ import { StudentDashboard } from './components/StudentDashboard';
 import { PricingView } from './components/PricingView';
 import { AdminPanel } from './components/AdminPanel';
 import { PrismaStudioView } from './components/PrismaStudioView';
+import { ArchitectureHubView } from './components/ArchitectureHubView';
+import { MobbinDesignView } from './components/MobbinDesignView';
+
+import { elasticsearchEngine } from './services/elasticsearch/elasticsearchClient';
+import { cdcPipeline } from './services/cdc/cdcPipeline';
+import { kafkaClient } from './services/kafka/kafkaClient';
+import { flinkStreamEngine } from './services/flink/flinkStreamEngine';
+import { paymentMicroservice } from './services/payment/paymentService';
+import { QuizController } from './controllers/QuizController';
+import { PaymentController } from './controllers/PaymentController';
 
 import {
   User,
@@ -79,6 +89,11 @@ export default function App() {
     }
   }, [darkMode]);
 
+  // Index catalog into Elasticsearch BM25 cluster on mount & updates
+  useEffect(() => {
+    elasticsearchEngine.initializeIndices(quizzes, subjects, categories, questions);
+  }, [quizzes, subjects, categories, questions]);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
@@ -96,12 +111,20 @@ export default function App() {
       return;
     }
 
+    // Publish attempt started event to Kafka
+    kafkaClient.produce(
+      'exampro.attempts.events',
+      currentUser.id,
+      { action: 'ATTEMPT_STARTED', quizId, userId: currentUser.id, timestamp: new Date().toISOString() },
+      [{ key: 'event.type', value: 'attempt.started' }]
+    );
+
     setActiveQuizId(quizId);
     setCurrentView('attempt');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Finish exam handler
+  // Finish exam handler - Integrated with CDC, Kafka, and Flink
   const handleFinishQuiz = (attempt: QuizAttempt) => {
     setAttempts((prev) => [attempt, ...prev]);
     setCurrentAttempt(attempt);
@@ -128,8 +151,27 @@ export default function App() {
     };
 
     setLeaderboard((prev) => [newEntry, ...prev]);
+
+    // 1. Capture in PostgreSQL CDC Pipeline (Debezium WAL)
+    cdcPipeline.captureMutation('QuizAttempt', 'c', null, attempt);
+
+    // 2. Publish to Apache Kafka `exampro.attempts.events` topic
+    kafkaClient.produce(
+      'exampro.attempts.events',
+      currentUser.id,
+      { attempt, quiz: activeQuiz, userName: currentUser.name },
+      [
+        { key: 'event.type', value: 'attempt.submitted' },
+        { key: 'quiz.id', value: attempt.quizId },
+        { key: 'score', value: attempt.score.toString() },
+      ]
+    );
+
+    // 3. Ingest into Apache Flink Stateful Stream Processing Engine
+    flinkStreamEngine.processAttemptStream({ attempt, quiz: activeQuiz, userName: currentUser.name });
+
     setCurrentView('result');
-    showToast(`Test completed! Your Net Score is ${attempt.score.toFixed(2)}.`);
+    showToast(`Test submitted! Score: ${attempt.score.toFixed(2)} • CDC & Kafka events streamed to Flink.`);
   };
 
   // Review past attempt handler
@@ -167,20 +209,37 @@ export default function App() {
     });
   };
 
-  // Plan upgrade handler
-  const handleUpgradePlan = (
+  // Plan upgrade handler via Payment Microservice & Idempotency Engine
+  const handleUpgradePlan = async (
     plan: SubscriptionPlan,
     provider: PaymentProvider,
     amount: number
   ) => {
+    const idempKey = `idemp-${currentUser.id}-${plan}-${Date.now().toString(36)}`;
+    const gateway = provider === 'NAGAD' ? 'NAGAD' : 'BKASH';
+
+    // 1. Dispatch to Payment Microservice
+    const { transaction } = await paymentMicroservice.initiateCheckout({
+      userId: currentUser.id,
+      userName: currentUser.name,
+      userEmail: currentUser.email,
+      amount,
+      plan,
+      gateway,
+      idempotencyKey: idempKey,
+    });
+
+    // 2. Complete verification & record double-entry ledger
+    await paymentMicroservice.executeVerification(transaction.transactionId, true);
+
     const newPayment: PaymentRecord = {
-      id: 'pay-' + Date.now(),
+      id: transaction.transactionId,
       userId: currentUser.id,
       userName: currentUser.name,
       amount,
       currency: 'BDT',
       provider,
-      transactionId: (provider.slice(0, 2) + Math.random().toString(36).substring(2, 9)).toUpperCase(),
+      transactionId: transaction.transactionId,
       plan,
       status: 'SUCCESS',
       createdAt: new Date().toISOString(),
@@ -188,7 +247,7 @@ export default function App() {
 
     setPayments((prev) => [newPayment, ...prev]);
 
-    // Upgrade user
+    // Upgrade user profile
     setCurrentUser((prev) => ({
       ...prev,
       isPremium: true,
@@ -196,18 +255,24 @@ export default function App() {
       subscriptionExpiresAt: '2027-03-31',
     }));
 
-    showToast(`Congratulations! ${plan} successfully activated via ${provider}.`);
+    showToast(`Payment verified! ${plan} activated via ${gateway} (Tx: ${transaction.transactionId}). Ledger updated.`);
   };
 
-  // Admin CRUD Handlers
+  // Admin CRUD Handlers with CDC and Elasticsearch propagation
   const handleAddQuiz = (newQuiz: Quiz) => {
     setQuizzes((prev) => [newQuiz, ...prev]);
-    showToast(`Quiz "${newQuiz.title}" successfully created and published.`);
+    // Emit CDC mutation (automatically updates Kafka & Elasticsearch)
+    cdcPipeline.captureMutation('Quiz', 'c', null, newQuiz);
+    showToast(`Quiz "${newQuiz.title}" created. CDC captured & synced to Elasticsearch.`);
   };
 
   const handleDeleteQuiz = (quizId: string) => {
+    const target = quizzes.find((q) => q.id === quizId);
     setQuizzes((prev) => prev.filter((q) => q.id !== quizId));
-    showToast('Quiz deleted successfully.');
+    if (target) {
+      cdcPipeline.captureMutation('Quiz', 'd', target, null);
+    }
+    showToast('Quiz deleted. CDC propagated delete mutation to Elasticsearch.');
   };
 
   const handleAddQuestion = (quizId: string, newQ: Question) => {
@@ -410,6 +475,24 @@ export default function App() {
             />
           </div>
         )}
+
+        {currentView === 'architecture' && (
+          <ArchitectureHubView
+            currentUser={currentUser}
+            quizzes={quizzes}
+            onSwitchUser={(user) => {
+              setCurrentUser(user);
+              showToast(`Switched active persona to ${user.name}`);
+            }}
+            onClose={() => setCurrentView('home')}
+          />
+        )}
+
+        {currentView === 'mobbin' && (
+          <MobbinDesignView
+            onClose={() => setCurrentView('home')}
+          />
+        )}
       </main>
 
       {/* Footer */}
@@ -428,6 +511,20 @@ export default function App() {
             </button>
             <button onClick={() => setCurrentView('pricing')} className="hover:underline">
               BCS Pro Pass
+            </button>
+            <button
+              onClick={() => setCurrentView('mobbin')}
+              className="hover:underline font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1"
+            >
+              <span>Mobbin Design</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+            </button>
+            <button
+              onClick={() => setCurrentView('architecture')}
+              className="hover:underline font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1"
+            >
+              <span>Architecture Hub</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
             </button>
             <button
               onClick={() => setCurrentView('prisma_studio')}

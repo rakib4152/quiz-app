@@ -11,8 +11,10 @@ import {
   AlertTriangle,
   RotateCcw,
   BookOpen,
+  Cpu,
 } from 'lucide-react';
 import { Quiz, Subject, Category, Chapter, User } from '../types';
+import { elasticsearchEngine } from '../services/elasticsearch/elasticsearchClient';
 
 interface QuizListProps {
   quizzes: Quiz[];
@@ -48,17 +50,46 @@ export const QuizList: React.FC<QuizListProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [difficultyFilter, setDifficultyFilter] = useState<'ALL' | 'EASY' | 'MEDIUM' | 'HARD'>('ALL');
 
-  // Filtered quizzes calculation
-  const filteredQuizzes = useMemo(() => {
-    return quizzes.filter((quiz) => {
-      // Search filter
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        const matchesTitle = quiz.title.toLowerCase().includes(query);
-        const matchesDesc = quiz.description.toLowerCase().includes(query);
-        if (!matchesTitle && !matchesDesc) return false;
-      }
+  // Filtered quizzes calculation using Elasticsearch BM25 when query is provided
+  const { filteredQuizzes, esMetrics, highlightsMap }: {
+    filteredQuizzes: Quiz[];
+    esMetrics: { took: number; total: number } | null;
+    highlightsMap: Record<string, { title?: string; description?: string; score: number }>;
+  } = useMemo(() => {
+    if (searchQuery.trim()) {
+      const searchRes = elasticsearchEngine.searchQuizzes({
+        q: searchQuery,
+        subjectId: selectedSubjectId !== 'ALL' ? selectedSubjectId : undefined,
+        difficulty: difficultyFilter !== 'ALL' ? difficultyFilter : undefined,
+        isPaid: accessFilter === 'PAID' ? true : accessFilter === 'FREE' ? false : undefined,
+        fuzziness: 'AUTO',
+        highlight: true,
+      });
 
+      const matchedIds = new Set(searchRes.hits.hits.map((h) => h._id));
+      const hMap: Record<string, { title?: string; description?: string; score: number }> = {};
+      searchRes.hits.hits.forEach((h) => {
+        hMap[h._id] = {
+          title: h.highlight?.title?.[0],
+          description: h.highlight?.description?.[0],
+          score: h._score,
+        };
+      });
+
+      // Filter and order quizzes by ES BM25 relevance score
+      const list = quizzes
+        .filter((q) => matchedIds.has(q.id))
+        .filter((q) => (selectedCategory !== 'ALL' ? q.categoryId === selectedCategory : true))
+        .sort((a, b) => (hMap[b.id]?.score || 0) - (hMap[a.id]?.score || 0));
+
+      return {
+        filteredQuizzes: list,
+        esMetrics: { took: searchRes.took, total: searchRes.hits.total.value },
+        highlightsMap: hMap,
+      };
+    }
+
+    const list = quizzes.filter((quiz) => {
       // Subject filter
       if (selectedSubjectId !== 'ALL' && quiz.subjectId !== selectedSubjectId) {
         return false;
@@ -80,6 +111,9 @@ export const QuizList: React.FC<QuizListProps> = ({
 
       return true;
     });
+
+    const emptyMap: Record<string, { title?: string; description?: string; score: number }> = {};
+    return { filteredQuizzes: list, esMetrics: null, highlightsMap: emptyMap };
   }, [quizzes, searchQuery, selectedSubjectId, selectedCategory, accessFilter, difficultyFilter]);
 
   const resetFilters = () => {
@@ -233,6 +267,22 @@ export const QuizList: React.FC<QuizListProps> = ({
         </div>
       </div>
 
+      {/* Elasticsearch Active Status Banner */}
+      {esMetrics && (
+        <div className="px-4 py-2.5 rounded-xl bg-cyan-950/40 border border-cyan-800/60 text-xs flex items-center justify-between text-cyan-300 font-mono">
+          <div className="flex items-center gap-2">
+            <Cpu className="w-4 h-4 text-cyan-400 animate-pulse" />
+            <span>
+              Elasticsearch BM25 Search Engine: <strong>{esMetrics.total}</strong> results returned in{' '}
+              <strong className="text-emerald-400">{esMetrics.took} ms</strong>
+            </span>
+          </div>
+          <span className="text-[11px] text-cyan-400/80 bg-cyan-900/40 px-2 py-0.5 rounded border border-cyan-800">
+            Fuzziness: AUTO
+          </span>
+        </div>
+      )}
+
       {/* Quizzes List Cards */}
       {filteredQuizzes.length === 0 ? (
         <div className="p-12 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 space-y-3">
@@ -294,13 +344,32 @@ export const QuizList: React.FC<QuizListProps> = ({
                     </button>
                   </div>
 
-                  {/* Title & Description */}
+                  {/* Title & Description with ES Highlight */}
                   <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
-                      {quiz.title}
-                    </h3>
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
+                        {highlightsMap[quiz.id]?.title ? (
+                          <span
+                            dangerouslySetInnerHTML={{ __html: highlightsMap[quiz.id].title! }}
+                          />
+                        ) : (
+                          quiz.title
+                        )}
+                      </h3>
+                      {highlightsMap[quiz.id] && (
+                        <span className="shrink-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20">
+                          Score: {highlightsMap[quiz.id].score.toFixed(1)}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                      {quiz.description}
+                      {highlightsMap[quiz.id]?.description ? (
+                        <span
+                          dangerouslySetInnerHTML={{ __html: highlightsMap[quiz.id].description! }}
+                        />
+                      ) : (
+                        quiz.description
+                      )}
                     </p>
                   </div>
 
